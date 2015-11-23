@@ -17,6 +17,7 @@ var watchpath string = "/"
 var command string
 var exts []string = []string{".go", ".js", ".php", ".py", ".test"}
 
+//watch filesystem, execute command on changes
 func main() {
 	if len(os.Args) == 3 {
 		watchpath = os.Args[1]
@@ -25,8 +26,6 @@ func main() {
 		fmt.Println("Usage: reloader <path> <command> &")
 		return
 	}
-	// log.Println("watch:", watchpath)
-	// log.Println("command:", command)
 	watcher, err := inotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +37,6 @@ func main() {
 	for {
 		select {
 		case ev := <-watcher.Event:
-			//DEBUG:log.Println("event:", ev)
 			if ev.Mask == syscall.IN_CLOSE_WRITE ||
 				ev.Mask == syscall.IN_DELETE {
 				if hasExt(path.Ext(ev.Name)) {
@@ -47,12 +45,6 @@ func main() {
 					if err != nil {
 						log.Println(err)
 					}
-					// log.Println(execShell(flds[0], flds[1:]))
-					// if s := strings.Index(command, " "); s > -1 {
-					// 	log.Println(command[:s])
-					// 	log.Println(command[s+1:])
-					// 	log.Println(execShell(command[:s], []string{command[s+1:]}))
-					// }
 				}
 			}
 		case err := <-watcher.Error:
@@ -60,6 +52,8 @@ func main() {
 		}
 	}
 }
+
+//check if ext is in exts
 func hasExt(ext string) bool {
 	for _, e := range exts {
 		if e == ext {
