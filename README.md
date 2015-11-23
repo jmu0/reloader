@@ -1,9 +1,13 @@
 # Reloader
+Filesystem watcher written in go (golang)
 
-usage: reloader "path" "command" &
+##Usage: 
+<pre>reloader "path" "command" &</pre>
+<p>
 Watches "path". Executes "command" on changes.
+</p>
 
-##example:
-reload page in firefox (with <a href='https://addons.mozilla.org/en-US/firefox/addon/remote-control/'>remote control plugin</a>)
-<pre>reloader /path/to/project "echo reload | nc localhost 3200" &</pre>
+##Example:
+Reload page in firefox (with <a href='https://addons.mozilla.org/en-US/firefox/addon/remote-control/'>remote control plugin</a>)
+<pre>reloader /path/to/project "echo reload | nc localhost 32000" &</pre>
 
