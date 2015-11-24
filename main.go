@@ -15,7 +15,7 @@ import (
 
 var watchpath string = "/"
 var command string
-var exts []string = []string{".go", ".js", ".php", ".py", ".test"}
+var exts []string = []string{".go", ".js", ".php", ".py", ".test", ".html", ".css", ".less"}
 
 //watch filesystem, execute command on changes
 func main() {
@@ -34,22 +34,29 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("watching:", watchpath)
 	for {
 		select {
 		case ev := <-watcher.Event:
 			if ev.Mask == syscall.IN_CLOSE_WRITE ||
 				ev.Mask == syscall.IN_DELETE {
 				if hasExt(path.Ext(ev.Name)) {
-					flds := strings.Fields(command)
-					_, err := execShell(flds[0], flds[1:])
-					if err != nil {
-						log.Println(err)
-					}
+					log.Println("Reloader:", command)
+					doCmd(command)
 				}
 			}
 		case err := <-watcher.Error:
 			log.Println("error:", err)
 		}
+	}
+}
+
+func doCmd(command string) {
+	//TODO: handle commands with pipes
+	flds := strings.Fields(command)
+	_, err := execShell(flds[0], flds[1:])
+	if err != nil {
+		log.Println(err)
 	}
 }
 
